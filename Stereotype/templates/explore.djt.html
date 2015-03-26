@@ -1,0 +1,31 @@
+{% extends 'base.djt.html' %}
+
+{% block title %} Stereotyper -- {{ selected }} associated with {{ search.title }} {% endblock %}
+
+{% block search %}{{ search.title }}<img src="{{ search.thumbnail }}" />{% endblock %}
+
+{% block content %}
+	{% for listing in listings %}
+        <a href="{{ listing.link }}">
+		<div class="listing-preview" style="background-image: url('{{ listing.image_url }}')">
+			<div class="listing-preview-inner">
+                {{ listing.title }}<br />
+			</div>
+		</div>
+        </a>
+	{% endfor %}
+    <script>
+	$('form').submit(function() {
+            $('.listing-preview').fadeOut(2000);
+	});
+        $('.listing-preview').click(function() {
+            $('.listing-preview').not(this).fadeTo(2000, 0, function(){
+                $(this).css({visibility: 'hidden'});
+            });
+            $(this).css({'z-index': '4', 'position': 'fixed'});
+            $(this).children().fadeOut();
+            $(this).animate({'border': 0},1000);
+            $(this).animate({'top': '-20', 'right': '80', 'height':50, 'width':50}, 2000)
+        });
+    </script>
+{% endblock %}

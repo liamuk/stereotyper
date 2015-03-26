@@ -1,0 +1,67 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <link rel=stylesheet type='text/css' href='{% static "css/reset.css" %}' />
+        <link rel=stylesheet type='text/css' href='{% static "css/markdown.css" %}' />
+        <link rel=stylesheet type='text/css' href='{% static "css/main_style.css" %}' />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script type="text/javascript" src='{% static "js/masonry.js" %}'></script>
+        <script>
+        ending = {
+	'all': '/all',
+        'books':'/books',
+        'movies': '/movies',
+        'games': '/games',
+        'musicians':'/musicians',
+        'companies':'/companies'
+        }
+        $(document).ready(function() {
+            $('.content').masonry({
+                'isFitWidth': true,
+            });
+            $('.listing-preview').fadeTo(2000, 1);
+            $('.content > a').attr('href', function(i, attr) {
+                newhref = attr.substr(0, attr.lastIndexOf('/'))
+		return newhref+ending[$('#type').val()];
+            });
+            $('#type').change(function() {
+                $('.content > a').attr('href', function(i, attr) {
+                    newhref = attr.substr(0, attr.lastIndexOf('/'))
+		    return newhref+ending[$('#type').val()];
+                });
+            });
+        });
+        </script>
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body onunload=''>
+        <div class='header'>
+            <div class='header-inner'>
+                <a href='/'><span class='logo'>Stereotyper</span></a>
+            </div>
+            <div class='current-search'>
+                {% block search %}{% endblock %}
+            </div>
+            <div class='search-form'> 
+            <form action="/search_helper">
+                <select name="type" id="type">
+                        <option value="all" {% if selected == 'all' %}selected{% endif %}>All</option>
+			<option value="books"{% if selected == 'books' %} selected{% endif %}>Books</option>
+			<option value="movies"{% if selected == 'movies' %} selected{% endif %}>Movies</option>
+			<option value="games"{% if selected == 'games' %} selected{% endif %}>Games</option>
+			<option value="musicians"{% if selected == 'musicians' %} selected{% endif %}>Musicians</option>
+			<option value="companies"{% if selected == 'companies' %} selected{% endif %}>Companies</option>
+		</select> associated with
+                <input type="text" id="search" name="q" placeholder="Search for a topic" />
+		<input type="submit" name="submit" style="display:none" />
+            </form>
+            </div>
+        </div>
+        <div class='content'>
+                {% block content %}{% endblock %}
+        </div>
+<!--        <div class='footer'>
+            &copy;2013 Billboard
+        </div> -->
+    </body>
+</html>
